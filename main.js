@@ -10,11 +10,11 @@ function showPasswordPrompt() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const posts = [
+    let posts = JSON.parse(localStorage.getItem('posts')) || [
         {
             id: 1,
             title: "My First Dog",
-            image: "images/dog1.jpg",
+            image: "images/dog1.webp",
             date: "2024-05-01",
             content: "This is a post about my first dog."
         },
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     ];
 
-    const blogPosts = [
+    let blogPosts = JSON.parse(localStorage.getItem('blogPosts')) || [
         {
             id: 1,
             title: "Welcome to My Blog",
@@ -75,13 +75,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const content = document.getElementById("content").value;
         const date = new Date().toISOString().split('T')[0];
         const newPost = {
-            id: posts.length + 1,
+            id: posts.length ? posts[posts.length - 1].id + 1 : 1,
             title,
             image,
             date,
             content
         };
         posts.push(newPost);
+        localStorage.setItem('posts', JSON.stringify(posts));
         renderPosts(posts, postsSection);
         document.getElementById("post-form").reset();
         document.getElementById("post-form").style.display = "none";
@@ -93,12 +94,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const content = document.getElementById("blog-content").value;
         const date = new Date().toISOString().split('T')[0];
         const newPost = {
-            id: blogPosts.length + 1,
+            id: blogPosts.length ? blogPosts[blogPosts.length - 1].id + 1 : 1,
             title,
             date,
             content
         };
         blogPosts.push(newPost);
+        localStorage.setItem('blogPosts', JSON.stringify(blogPosts));
         renderBlogPosts(blogPosts, blogPostsSection);
         document.getElementById("blog-post-form").reset();
         document.getElementById("blog-post-form").style.display = "none";
