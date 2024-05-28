@@ -2,7 +2,8 @@ function showPasswordPrompt() {
     const password = prompt("Enter the password to post:");
     if (password === "yourSecretPassword") {
         alert("Password correct! You can now post.");
-        // Code to enable posting functionality
+        document.getElementById("post-form").style.display = "block";
+        document.getElementById("blog-post-form").style.display = "block";
     } else {
         alert("Incorrect password!");
     }
@@ -13,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
             id: 1,
             title: "My First Dog",
-            image: "images/dog1.webp",
+            image: "images/dog1.jpg",
             date: "2024-05-01",
             content: "This is a post about my first dog."
         },
@@ -39,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const blogPostsSection = document.getElementById("blog-posts");
 
     function renderPosts(posts, container) {
-        container.innerHTML = posts.map(post => `
+        container.innerHTML = posts.sort((a, b) => b.id - a.id).map(post => `
             <div class="post">
                 <h2>${post.title}</h2>
                 <img src="${post.image}" alt="${post.title}">
@@ -50,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderBlogPosts(blogPosts, container) {
-        container.innerHTML = blogPosts.map(post => `
+        container.innerHTML = blogPosts.sort((a, b) => b.id - a.id).map(post => `
             <div class="blog-post">
                 <h2>${post.title}</h2>
                 <p>${post.content}</p>
@@ -59,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
         `).join('');
     }
 
-
     if (postsSection) {
         renderPosts(posts, postsSection);
     }
@@ -67,4 +67,40 @@ document.addEventListener("DOMContentLoaded", () => {
     if (blogPostsSection) {
         renderBlogPosts(blogPosts, blogPostsSection);
     }
+
+    window.handlePostSubmit = function(event) {
+        event.preventDefault();
+        const title = document.getElementById("title").value;
+        const image = document.getElementById("image").value;
+        const content = document.getElementById("content").value;
+        const date = new Date().toISOString().split('T')[0];
+        const newPost = {
+            id: posts.length + 1,
+            title,
+            image,
+            date,
+            content
+        };
+        posts.push(newPost);
+        renderPosts(posts, postsSection);
+        document.getElementById("post-form").reset();
+        document.getElementById("post-form").style.display = "none";
+    };
+
+    window.handleBlogPostSubmit = function(event) {
+        event.preventDefault();
+        const title = document.getElementById("blog-title").value;
+        const content = document.getElementById("blog-content").value;
+        const date = new Date().toISOString().split('T')[0];
+        const newPost = {
+            id: blogPosts.length + 1,
+            title,
+            date,
+            content
+        };
+        blogPosts.push(newPost);
+        renderBlogPosts(blogPosts, blogPostsSection);
+        document.getElementById("blog-post-form").reset();
+        document.getElementById("blog-post-form").style.display = "none";
+    };
 });
